@@ -1,5 +1,7 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, Input } from '@angular/core';
-import { Quiz } from 'src/app/interfaces/quiz';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Quiz } from 'src/app/models/quiz';
 
 @Component({
   selector: 'quiz',
@@ -7,5 +9,22 @@ import { Quiz } from 'src/app/interfaces/quiz';
   styleUrls: ['./quiz.component.css']
 })
 export class QuizComponent {
-  @Input("quiz") quiz!: Quiz;
+  quiz!: Quiz;
+
+  constructor(
+    private rout: Router,
+    private activeRout: ActivatedRoute,
+    private http: HttpClient
+  )
+  {
+      var id = + this.activeRout.snapshot.params["id"];
+      console.log(id);
+      if(id){
+
+      }
+      else{
+        console.log("Uncorrect Id - Back to Home")
+        this.rout.navigate(["/home"]);
+      }
+  }
 }

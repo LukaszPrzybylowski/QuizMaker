@@ -7,12 +7,15 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { QuizComponent } from './components/quiz/quiz/quiz.component';
 import { QuizListComponent } from './components/quiz-list/quiz-list.component';
+import { HomeComponent } from './components/home/home.component';
+
 
 @NgModule({
   declarations: [
     AppComponent,
     QuizListComponent,
-    QuizComponent
+    QuizComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,

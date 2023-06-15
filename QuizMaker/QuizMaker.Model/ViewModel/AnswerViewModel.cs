@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System.ComponentModel;
+using System.Text.Json.Serialization;
 
 namespace QuizMakerFree.ViewModels
 {
@@ -18,7 +19,7 @@ namespace QuizMakerFree.ViewModels
         public int Flags { get; set; }
         [DefaultValue(0)]
         public int Value { get; set; }
-        [JsonIgnore]
+        [System.Text.Json.Serialization.JsonIgnore]
         public DateTime CreatedDate { get; set; }
         public DateTime LastModifiedDate { get; set; }
     }

@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
-import { Component, Inject, Input } from "@angular/core";
-import { Quiz } from "../../interfaces/quiz";
-import { QuizListService } from "src/app/services/quiz/quiz-list.service";
+import { Component, Inject, Input, OnInit } from "@angular/core";
+import { Quiz } from "../../models/quiz";
+import { QuizListService } from "src/app/services/quiz/quiz.service";
 
 @Component({
   selector: "quiz-list",
@@ -9,41 +9,38 @@ import { QuizListService } from "src/app/services/quiz/quiz-list.service";
   styleUrls: ['./quiz-list.component.css']
 })
 
-export class QuizListComponent {
+export class QuizListComponent implements OnInit {
   @Input() class!: string;
-  title: string;
+  title!: string;
   selectedQuiz!: Quiz;
   quizzes!: Quiz[];
-  quizListService!: QuizListService;
-  result!: any;
 
+  constructor(public quizListService: QuizListService){}
 
-  constructor(quizListService: QuizListService)
-  {
+  ngOnInit(){
+ 
     switch (this.class){
       case 'latest':
         default:
           this.title = "Newest Quizzes"
-          this.result = this.quizListService.getLatestQuiz().subscribe(result =>{
+          this.quizListService.getLatestQuiz().subscribe(result =>{
             this.quizzes = result;
-          }, error => console.error(error));
+          })
           break;
       case "byTitle":
           this.title = "Quizzes Alphabetically"
-          this.result = this.quizListService.getLatestQuiz().subscribe(result =>{
+          this.quizListService.getByTittleQuiz().subscribe(result =>{
             this.quizzes = result;
-          }, error => console.error(error));
+          })
           break;
-      case "byTitle":
+      case "random":
           this.title = "Random Quizzes"
-          url += "Random/"
+          this.quizListService.getRandomQuiz().subscribe(result => {
+            this.quizzes = result;
+          })
           break;
-    }
 
-    this.result.sunscribe(result => {
-      this.quizzes = result;
-    }, error => console.error(error));
-    ;
+    }
   }
 
   onSelect(quiz: Quiz) {

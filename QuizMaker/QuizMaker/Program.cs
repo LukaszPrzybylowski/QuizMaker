@@ -1,5 +1,6 @@
 
 using Microsoft.AspNetCore.Builder;
+using QuizMaker.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddMvc();
+
+builder.Services.AddScoped<IQuizService, QuizService>();
 
 var app = builder.Build();
 

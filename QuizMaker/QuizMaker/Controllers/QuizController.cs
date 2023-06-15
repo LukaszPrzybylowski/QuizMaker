@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using QuizMaker.Services;
 using QuizMakerFree.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,17 +12,22 @@ namespace QuizMakerFree.Controllers
     [ApiController]
     public class QuizController : ControllerBase
     {
+        private readonly IQuizService _quizService;
 
+        public QuizController(IQuizService quizService)
+        {
+            _quizService = quizService;
+        }
         [HttpGet("{id}")]
-        public IActionResult Get(int id) 
+        public async Task<ActionResult<QuizViewModel>> Get(int id)
         {
             var v = new QuizViewModel()
             {
-                Id= id,
+                Id = id,
                 Title = String.Format("Sample quiz with identity {0}", id),
                 Description = "This is not real quiz - it is sample",
-                CreatedDate= DateTime.Now,
-                LastModifiedDate= DateTime.Now
+                CreatedDate = DateTime.Now,
+                LastModifiedDate = DateTime.Now
             };
 
             return Ok(v);
@@ -46,55 +52,32 @@ namespace QuizMakerFree.Controllers
         }
 
         [HttpGet("Latest/{num?}")]
-        public IActionResult Latest(int num = 10) 
+        public async Task<ActionResult<List<QuizViewModel>>> Latest(int num = 10)
         {
-            var sampleQuizzes = new List<QuizViewModel>();
+            var result = await _quizService.Latest(num);
 
-            sampleQuizzes.Add(new QuizViewModel()
-            {
-                Id = 1,
-                Title = "Which character from Shingeki No Kyojin are You?",
-                Description = "Anime-based personality test",
-                CreatedDate = DateTime.Now,
-                LastModifiedDate = DateTime.Now,
-            });
+            return Ok(result);
 
-            for (int i = 2; i <= num; i++)
-            {
-                sampleQuizzes.Add(new QuizViewModel()
-                {
-                    Id = i,
-                    Title = String.Format("Sample Quiz {0}", i),
-                    Description = "This is sample Quiz",
-                    CreatedDate = DateTime.Now,
-                    LastModifiedDate = DateTime.Now
-                });
-            }
-
-            return Ok(sampleQuizzes);
         }
 
         [HttpGet("ByTitle/{num:int?}")]
-        public IActionResult ByTitle(int num = 10) 
+        public async Task<ActionResult<List<QuizViewModel>>> ByTitle(int num = 10)
         {
-            var sampleQuizzes = new JsonSerializer();
-            
-            var result = sampleQuizzes.Deserialize<List<QuizViewModel>>(new JsonReader(new StringReader(Latest(num).ToString()))
-            return Ok(
-                sampleQuizzes.OrderBy(t => t.Title));
+            var sampleQuizzes = await _quizService.Latest(num);
+
+            var sortedQuizzes = sampleQuizzes.OrderBy(x => x.Title).ToList();
+
+            return Ok(sortedQuizzes);
         }
 
         [HttpGet("Random/{num:int?}")]
-        public IActionResult Random(int num = 10)
+        public async Task<ActionResult<List<QuizViewModel>>> Random(int num = 10)
         {
-            var sampleQuizzes = ((JsonResult)Latest(num)).Value as List<QuizViewModel>;
+            var sampleQuizzes = await _quizService.Latest(num);
 
-            return new JsonResult(
-                sampleQuizzes.OrderBy(t => Guid.NewGuid()),
-                new JsonSerializerSettings()
-                {
-                    Formatting = Formatting.Indented,
-                });
+            var randomQuizzes = sampleQuizzes.OrderBy(t => Guid.NewGuid()).ToList();
+
+            return Ok(randomQuizzes);
         }
     }
 }
