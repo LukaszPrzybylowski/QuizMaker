@@ -7,7 +7,7 @@ import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root'
 })
-export class QuizListService {
+export class QuizService {
 
   constructor(
     private http: HttpClient
@@ -25,6 +25,6 @@ export class QuizListService {
     return this.http.get<Quiz[]>(`${environment.webApi}/quiz/Random`);
   }
   getQuiz(id: number): Observable<Quiz>{
-    return this.http.get<Quiz>(`${environment.webApi}/quiz/${id}`)
+    return this.http.get<Quiz>(`${environment.webApi}/quiz/${id}`);
   }
 }

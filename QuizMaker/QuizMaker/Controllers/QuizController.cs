@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using QuizMaker.Model.Data;
 using QuizMaker.Services;
 using QuizMakerFree.ViewModels;
 using System.Collections.Generic;
@@ -12,25 +13,18 @@ namespace QuizMakerFree.Controllers
     [ApiController]
     public class QuizController : ControllerBase
     {
-        private readonly IQuizService _quizService;
+        private ApplicationDbContext DbContext;
 
-        public QuizController(IQuizService quizService)
+        public QuizController(ApplicationDbContext context)
         {
-            _quizService = quizService;
+            DbContext = context;
         }
         [HttpGet("{id}")]
         public async Task<ActionResult<QuizViewModel>> Get(int id)
         {
-            var v = new QuizViewModel()
-            {
-                Id = id,
-                Title = String.Format("Sample quiz with identity {0}", id),
-                Description = "This is not real quiz - it is sample",
-                CreatedDate = DateTime.Now,
-                LastModifiedDate = DateTime.Now
-            };
+            var quiz = DbContext.Quizzes.Where(x => x.Id == id).FirstOrDefault();
 
-            return Ok(v);
+            return Ok(quiz);
         }
 
         [HttpPut]
@@ -54,30 +48,26 @@ namespace QuizMakerFree.Controllers
         [HttpGet("Latest/{num?}")]
         public async Task<ActionResult<List<QuizViewModel>>> Latest(int num = 10)
         {
-            var result = await _quizService.Latest(num);
+            var latest = DbContext.Quizzes.OrderByDescending(q => q.CreatedDate).Take(num).ToArray();
 
-            return Ok(result);
+            return Ok(latest);
 
         }
 
         [HttpGet("ByTitle/{num:int?}")]
         public async Task<ActionResult<List<QuizViewModel>>> ByTitle(int num = 10)
         {
-            var sampleQuizzes = await _quizService.Latest(num);
+            var byTitle = DbContext.Quizzes.OrderBy(q => q.Title).Take(num).ToArray();
 
-            var sortedQuizzes = sampleQuizzes.OrderBy(x => x.Title).ToList();
-
-            return Ok(sortedQuizzes);
+            return Ok(byTitle);
         }
 
         [HttpGet("Random/{num:int?}")]
         public async Task<ActionResult<List<QuizViewModel>>> Random(int num = 10)
         {
-            var sampleQuizzes = await _quizService.Latest(num);
+            var random = DbContext.Quizzes.OrderBy(q => Guid.NewGuid()).Take(num).ToArray();
 
-            var randomQuizzes = sampleQuizzes.OrderBy(t => Guid.NewGuid()).ToList();
-
-            return Ok(randomQuizzes);
+            return Ok(random);
         }
     }
 }

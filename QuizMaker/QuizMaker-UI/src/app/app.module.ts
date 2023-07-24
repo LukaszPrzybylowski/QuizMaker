@@ -8,6 +8,10 @@ import { HttpClientModule } from '@angular/common/http';
 import { QuizComponent } from './components/quiz/quiz/quiz.component';
 import { QuizListComponent } from './components/quiz-list/quiz-list.component';
 import { HomeComponent } from './components/home/home.component';
+import { AboutComponent } from './components/about/about/about.component';
+import { LoginComponent } from './components/login/login/login.component';
+import { PageNotFoundComponent } from './components/pagenotfound/pagenotfound/pagenotfound.component';
+import { NavMenuComponent } from './components/navmenu/nav-menu/nav-menu.component';
 
 
 @NgModule({
@@ -15,7 +19,11 @@ import { HomeComponent } from './components/home/home.component';
     AppComponent,
     QuizListComponent,
     QuizComponent,
-    HomeComponent
+    HomeComponent,
+    AboutComponent,
+    LoginComponent,
+    PageNotFoundComponent,
+    NavMenuComponent
   ],
   imports: [
     BrowserModule,

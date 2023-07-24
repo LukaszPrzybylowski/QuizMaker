@@ -3,11 +3,11 @@
     <ul>
         <li>
             <label>Title:</label>
-            <input (ngModel)="quiz.title" placeholder="Put the title....">
+            <input (ngModel)="quiz.title" placeholder="{{quiz.title}}">
         </li>
         <li>
             <label>Description: </label>
-            <textarea (ngModel)="quiz.description" placeholder="Put description..."></textarea>
+            <textarea (ngModel)="quiz.description" placeholder="{{quiz.description}}"></textarea>
         </li>
     </ul>
 </div>

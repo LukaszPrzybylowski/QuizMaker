@@ -1,7 +1,7 @@
-import { HttpClient } from "@angular/common/http";
-import { Component, Inject, Input, OnInit } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { Quiz } from "../../models/quiz";
-import { QuizListService } from "src/app/services/quiz/quiz.service";
+import { QuizService } from "src/app/services/quiz/quiz.service";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "quiz-list",
@@ -15,7 +15,10 @@ export class QuizListComponent implements OnInit {
   selectedQuiz!: Quiz;
   quizzes!: Quiz[];
 
-  constructor(public quizListService: QuizListService){}
+  constructor(
+    public quizService: QuizService, 
+    private router: Router)
+    {}
 
   ngOnInit(){
  
@@ -23,19 +26,19 @@ export class QuizListComponent implements OnInit {
       case 'latest':
         default:
           this.title = "Newest Quizzes"
-          this.quizListService.getLatestQuiz().subscribe(result =>{
+          this.quizService.getLatestQuiz().subscribe(result =>{
             this.quizzes = result;
           })
           break;
       case "byTitle":
           this.title = "Quizzes Alphabetically"
-          this.quizListService.getByTittleQuiz().subscribe(result =>{
+          this.quizService.getByTittleQuiz().subscribe(result =>{
             this.quizzes = result;
           })
           break;
       case "random":
           this.title = "Random Quizzes"
-          this.quizListService.getRandomQuiz().subscribe(result => {
+          this.quizService.getRandomQuiz().subscribe(result => {
             this.quizzes = result;
           })
           break;
@@ -46,5 +49,6 @@ export class QuizListComponent implements OnInit {
   onSelect(quiz: Quiz) {
     this.selectedQuiz = quiz;
     console.log("Selected Id quiz" + this.selectedQuiz.id);
+    this.router.navigate(["quiz", this.selectedQuiz.id]);
   }
 }
