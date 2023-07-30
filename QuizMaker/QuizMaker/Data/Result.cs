@@ -11,6 +11,11 @@ namespace QuizMaker.Model.Data
 {
     public class Result
     {
+        public Result()
+        {
+
+        }
+
         [Key]
         [Required]
         public int Id { get; set; }

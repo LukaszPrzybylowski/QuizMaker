@@ -43,6 +43,6 @@ namespace QuizMaker.Model.Data
 
         public DbSet<Answer> Answers { get; set; }
 
-        public DbSet<Result> Results { get;}
+        public DbSet<Result> Results { get; set; }
     }
 }

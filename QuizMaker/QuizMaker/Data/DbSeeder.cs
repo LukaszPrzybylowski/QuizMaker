@@ -217,7 +217,6 @@ namespace QuizMaker.Data
                     QuizId = quiz.Id,
                     Text = "To jest przykładowy wynik utworzony przez klasę DbSeeder w celach testowych. ",
                     MinValue = 0,
-                    // wartość maksymalna powinna być równa iloczynowi liczby odpowiedzi i maksymalnej wartości odpowiedzi
                     MaxValue = numberOfAnswersPerQuestion * 2,
                     CreatedDate = createdDate,
                     LastModifiedDate = createdDate

@@ -13,18 +13,27 @@ export class QuizService {
     private http: HttpClient
   ) { }
 
-  getLatestQuiz() : Observable<Quiz[]>{
+  getLatestQuiz(): Observable<Quiz[]>{
     return this.http.get<Quiz[]>(`${environment.webApi}/quiz/Latest`);
   }
 
-  getByTittleQuiz() :  Observable<Quiz[]>{
+  getByTittleQuiz():  Observable<Quiz[]>{
     return this.http.get<Quiz[]>(`${environment.webApi}/quiz/ByTitle`);
   }
 
-  getRandomQuiz() : Observable<Quiz[]>{
+  getRandomQuiz(): Observable<Quiz[]>{
     return this.http.get<Quiz[]>(`${environment.webApi}/quiz/Random`);
   }
   getQuiz(id: number): Observable<Quiz>{
     return this.http.get<Quiz>(`${environment.webApi}/quiz/${id}`);
+  } 
+  createQuiz(model: Quiz): Observable<Quiz>{
+    return this.http.post<Quiz>(`${environment.webApi}/quiz`, model);
+  }
+  updateQuiz(model: Quiz): Observable<Quiz>{
+    return this.http.put<Quiz>(`${environment.webApi}/quiz`, model);
+  }
+  deleteQuiz(id: number): Observable<Quiz>{
+    return this.http.delete<Quiz>(`${environment.webApi}/quiz/${id}`);
   }
 }

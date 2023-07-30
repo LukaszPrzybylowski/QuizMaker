@@ -30,4 +30,17 @@ export class QuizComponent {
         this.router.navigate(["/home"]);
       }
   }
+  
+  onEdit(){
+    this.router.navigate(["quiz/edit", this.quiz.id]);
+  }
+  
+  onDelete(){
+    if(confirm("Do you really want to delete this quiz?")) {
+      this.quizService.deleteQuiz(this.quiz.id).subscribe(result => {
+        console.log("Quiz " + this.quiz.id + " has been deleted.");
+        this.router.navigate(['home'])
+      }, error => console.error(error));
+    }
+  }
 }
