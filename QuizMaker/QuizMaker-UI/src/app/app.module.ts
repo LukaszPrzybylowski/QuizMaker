@@ -12,6 +12,7 @@ import { AboutComponent } from './components/about/about/about.component';
 import { LoginComponent } from './components/login/login/login.component';
 import { PageNotFoundComponent } from './components/pagenotfound/pagenotfound/pagenotfound.component';
 import { NavMenuComponent } from './components/navmenu/nav-menu/nav-menu.component';
+import { QuizEditComponent } from './components/quiz/quiz-edit/quiz-edit/quiz-edit.component';
 
 
 @NgModule({
@@ -23,7 +24,8 @@ import { NavMenuComponent } from './components/navmenu/nav-menu/nav-menu.compone
     AboutComponent,
     LoginComponent,
     PageNotFoundComponent,
-    NavMenuComponent
+    NavMenuComponent,
+    QuizEditComponent
   ],
   imports: [
     BrowserModule,
