@@ -1,64 +1,101 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Mapster;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using QuizMaker.Controllers;
+using QuizMaker.Model.Data;
 using QuizMakerFree.ViewModels;
 
 namespace QuizMakerFree.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
-    public class AnswerController : ControllerBase
+    public class AnswerController : BaseApiController
     {
+        public AnswerController(ApplicationDbContext dbContext) : base(dbContext) { }
+
         [HttpGet("All/{questionId}")]
-        public IActionResult All(int questionId) 
+        public async Task<ActionResult<List<AnswerViewModel>>> All(int questionId) 
         {
-            var sampleAnswers = new List<AnswerViewModel>();
+            var answers = DbContext.Answers.Where(q => q.QuestionId == questionId).ToArray();
 
-            sampleAnswers.Add(new AnswerViewModel()
-            {
-                Id = 1,
-                QuestionId= questionId,
-                Text = "Friends and Family",
-                CreatedDate= DateTime.Now,
-                LastModifiedDate= DateTime.Now,
-            });
-
-            for(int i = 2; i <= 5; i++)
-            {
-                sampleAnswers.Add(new AnswerViewModel()
-                {
-                    Id = i,
-                    QuestionId = questionId,
-                    Text = String.Format("Sample Answers {0}", i),
-                    CreatedDate = DateTime.Now,
-                    LastModifiedDate = DateTime.Now,
-                });
-            }
-
-            return Ok(sampleAnswers);
+            return Ok(answers);
         }
 
         [HttpGet("{id}")]
-        public IActionResult Get(int id) 
+        public async Task<ActionResult<AnswerViewModel>> Get(int id) 
         {
-            return Content("Not implemented yet!");
+            var answer = DbContext.Answers.Where(i => i.Id == id).FirstOrDefault();
+
+            if(answer == null)
+            {
+                return NotFound(new
+                {
+                    Error = String.Format("Answer ID {0} has not been found", id)
+                });
+            }
+
+            return Ok(answer);
         }
 
         [HttpPut]
-        public IActionResult Put(AnswerViewModel model)
+        public async Task<ActionResult<AnswerViewModel>> Put(AnswerViewModel model)
         {
-            throw new NotImplementedException();
+            if (model == null) return new StatusCodeResult(500);
+
+            var answer = model.Adapt<Answer>();
+
+            answer.CreatedDate = DateTime.Now;
+            answer.LastModifiedDate = answer.CreatedDate;
+
+            DbContext.Answers.Add(answer);
+            DbContext.SaveChanges();
+
+            return Ok(answer);
         }
 
         [HttpPost]
-        public IActionResult Post(AnswerViewModel model)
+        public async Task<ActionResult<AnswerViewModel>> Post(AnswerViewModel model)
         {
-            throw new NotImplementedException();
+            if (model == null) return new StatusCodeResult(500);
+
+            var answer = DbContext.Answers.Where(i => i.Id == model.Id).FirstOrDefault();
+
+            if(answer == null)
+            {
+                return NotFound(new
+                {
+                    Erorr = String.Format("Answer ID {0} has not been found", model.Id)
+                });
+            }
+
+            answer.QuestionId = model.QuestionId;
+            answer.Text = model.Text;
+            answer.Value = model.Value;
+            answer.Notes = model.Notes;
+            
+            answer.LastModifiedDate = DateTime.Now;
+
+            DbContext.SaveChanges();
+
+            return Ok(answer);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            throw new NotImplementedException();
+            var answer = DbContext.Answers.Where(i => i.Id == id).FirstOrDefault();
+
+            if(answer == null)
+            {
+                return NotFound(new
+                {
+                    Error = String.Format("Answer ID {0} has not been found", id)
+                });
+            }
+
+            DbContext.Answers.Remove(answer);
+            DbContext.SaveChanges();
+
+            return new NoContentResult();
         }
     }
 }

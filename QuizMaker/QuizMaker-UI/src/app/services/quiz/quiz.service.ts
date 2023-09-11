@@ -28,12 +28,12 @@ export class QuizService {
     return this.http.get<Quiz>(`${environment.webApi}/quiz/${id}`);
   } 
   createQuiz(model: Quiz): Observable<Quiz>{
-    return this.http.post<Quiz>(`${environment.webApi}/quiz`, model);
-  }
-  updateQuiz(model: Quiz): Observable<Quiz>{
     return this.http.put<Quiz>(`${environment.webApi}/quiz`, model);
   }
-  deleteQuiz(id: number): Observable<Quiz>{
-    return this.http.delete<Quiz>(`${environment.webApi}/quiz/${id}`);
+  updateQuiz(model: Quiz): Observable<Quiz>{
+    return this.http.post<Quiz>(`${environment.webApi}/quiz`, model);
+  }
+  deleteQuiz(id: number): Observable<number>{
+    return this.http.delete<number>(`${environment.webApi}/quiz/${id}`);
   }
 }

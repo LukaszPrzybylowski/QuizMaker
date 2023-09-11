@@ -1,0 +1,31 @@
+<h2>{{title}}</h2>
+<div class="quiz-edit">
+    <div>
+        <label for="title">Result title:</label>
+        <br />
+        <input type="text" id="title" [(ngModel)]="result.text"
+        placeholder="enter a suitable text..." />
+    </div>
+
+    <div>
+        <label for="MinValue">Minimum Score Value:</label>
+        <br />
+        <input type="number" id="MinValue" name="MinValue" 
+            [(ngModel)]="result.minValue"/>
+    </div>
+
+    <div>
+        <label for="MaxValue">Maximum Score Value:</label>
+        <br />
+        <input type="number" id="MaxValue" name="MaxValue" 
+            [(ngModel)]="result.maxValue"/>
+    </div>
+
+    <div>
+        <input *ngIf="editMode" type="button" value="Apply Changes"
+            (click)="onSubmit(result)" />
+        <input *ngIf="!editMode" type="button" value="Create the Result!"
+            (click)="onSubmit(result)" />
+        <input type="button" value="Cancel" (click)="onBack()" />
+    </div>
+</div>

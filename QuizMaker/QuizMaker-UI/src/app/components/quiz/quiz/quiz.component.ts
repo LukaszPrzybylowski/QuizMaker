@@ -40,7 +40,7 @@ export class QuizComponent {
       this.quizService.deleteQuiz(this.quiz.id).subscribe(result => {
         console.log("Quiz " + this.quiz.id + " has been deleted.");
         this.router.navigate(['home'])
-      }, error => console.error(error));
+      });
     }
   }
 }

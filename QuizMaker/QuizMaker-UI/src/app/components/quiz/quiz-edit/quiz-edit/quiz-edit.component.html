@@ -3,20 +3,20 @@
     <div>
         <label for="title">Quiz title:</label>
         <br />
-        <input type="text" id="title" (ngModel)="quiz.title"
+        <input type="text" id="title" [(ngModel)]="quiz.title"
         placeholder="choose a title..." />
     </div>
     <div>
         <label for="description">Quiz description:</label>
         <br />
         <input type="text" id="description"
-        (ngModel)="quiz.description" 
+        [(ngModel)]="quiz.description" 
         placeholder="enter a description..." />
     </div>
     <div>
         <label for="text">Quiz informative text:</label>
         <br />
-        <textarea id="text" (ngModel)="quiz.text" 
+        <textarea id="text" [(ngModel)]="quiz.text" 
         placeholder="enter a text...">
         </textarea>
     </div>
@@ -27,4 +27,6 @@
             (click)="onSubmit(quiz)" />
         <input type="button" value="Cancel" (click)="onBack()" />
     </div>
+    <app-question-list [quiz]="quiz" *ngIf="editMode"></app-question-list>
+    <app-result-list [quiz]="quiz" *ngIf="editMode"></app-result-list>
 </div>

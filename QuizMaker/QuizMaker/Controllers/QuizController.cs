@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Mapster;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using QuizMaker.Controllers;
 using QuizMaker.Model.Data;
 using QuizMaker.Services;
 using QuizMakerFree.ViewModels;
@@ -9,40 +11,104 @@ using System.Linq;
 
 namespace QuizMakerFree.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class QuizController : ControllerBase
+    public class QuizController : BaseApiController
     {
-        private ApplicationDbContext DbContext;
+        public QuizController(ApplicationDbContext context) : base(context) {}
 
-        public QuizController(ApplicationDbContext context)
-        {
-            DbContext = context;
-        }
         [HttpGet("{id}")]
         public async Task<ActionResult<QuizViewModel>> Get(int id)
         {
             var quiz = DbContext.Quizzes.Where(x => x.Id == id).FirstOrDefault();
 
+            if(quiz == null)
+            {
+                return NotFound(new
+                {
+                    Error = String.Format("Quiz ID {0} has not been found", id)
+                });
+            }
+
             return Ok(quiz);
         }
 
         [HttpPut]
-        public IActionResult Put(QuizViewModel model)
+        public async Task<ActionResult<QuizViewModel>> Put(QuizViewModel model)
         {
-            throw new NotImplementedException();
+            if (model == null) return new StatusCodeResult(510);
+
+            var quiz = new Quiz();
+
+            quiz.Title = model.Title;
+            quiz.Description = model.Description;
+            quiz.Text = model.Text;
+            quiz.Notes = model.Notes;
+            quiz.CreatedDate = DateTime.Now;
+            quiz.LastModifiedDate = DateTime.Now;
+
+            quiz.UserId = DbContext.Users.Where(u => u.UserName == "Admin").
+                FirstOrDefault().Id;
+                
+            DbContext.Quizzes.Add(quiz);
+            DbContext.SaveChanges();
+
+            return Ok(quiz);
         }
 
         [HttpPost]
-        public IActionResult Post(QuizViewModel model)
+        public async Task<ActionResult<QuizViewModel>> Post(QuizViewModel model)
         {
-            throw new NotImplementedException();
+            if (model == null) return new StatusCodeResult(500);
+
+            var quiz = DbContext.Quizzes.Where(q => q.Id == model.Id).FirstOrDefault();
+
+            if(quiz == null)
+            {
+                quiz = new Quiz();
+                quiz.Title = model.Title;
+                quiz.Description = model.Description;
+                quiz.Text = model.Text;
+                quiz.Notes = model.Notes;
+                quiz.CreatedDate = DateTime.Now;
+                quiz.LastModifiedDate = DateTime.Now;
+
+                quiz.UserId = DbContext.Users.Where(u => u.UserName == "Admin").
+                    FirstOrDefault().Id;
+
+                DbContext.Quizzes.Add(quiz);
+                DbContext.SaveChanges();
+            }
+            else
+            {
+                quiz.Title = model.Title;
+                quiz.Description = model.Description;
+                quiz.Text = model.Text;
+                quiz.Notes = model.Notes;
+
+                quiz.LastModifiedDate = DateTime.Now;
+
+                DbContext.SaveChanges();
+            }
+
+            return Ok(quiz);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<ActionResult<QuizViewModel>> Delete(int id)
         {
-            throw new NotImplementedException();
+            var quiz = DbContext.Quizzes.Where(q => q.Id == id).FirstOrDefault();
+
+            if (quiz == null)
+            {
+                return NotFound(new
+                {
+                    Error = String.Format("Quiz ID {0} has not been found", id)
+                });
+            }
+
+            DbContext.Quizzes.Remove(quiz);
+            DbContext.SaveChanges();
+
+            return new NoContentResult();
         }
 
         [HttpGet("Latest/{num?}")]

@@ -1,66 +1,91 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Mapster;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using QuizMaker.Controllers;
+using QuizMaker.Model.Data;
 using QuizMakerFree.ViewModels;
 
 namespace QuizMakerFree.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
-    public class QuestionController : ControllerBase
+    public class QuestionController : BaseApiController
     {
+        public QuestionController(ApplicationDbContext dbContext) : base(dbContext) { }
 
         [HttpGet("All/{quizId}")]
-        public IActionResult All(int quizId) 
+        public async Task<ActionResult<List<QuestionViewModel>>> All(int quizId) 
         {
-            var sampleQuestions = new List<QuestionViewModel>();
+            var questions = DbContext.Questions.Where(q => q.QuizId == quizId).ToArray();
 
-            sampleQuestions.Add(new QuestionViewModel()
-            {
-                Id = 1,
-                QuizId = quizId,
-                Text = "What do you value most in your life?",
-                CreatedDate= DateTime.Now,
-                LastModifiedDate= DateTime.Now,
-            });
-
-            for(int i = 2; i < 5; i++)
-            {
-                sampleQuestions.Add(new QuestionViewModel()
-                {
-                    Id = i,
-                    QuizId = quizId,
-                    Text = String.Format("Sample Question {0}", i),
-                    CreatedDate = DateTime.Now,
-                    LastModifiedDate = DateTime.Now,
-                });
-            }
-
-            return Ok(sampleQuestions);
-            
+            return Ok(questions);      
         }
 
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public async Task<ActionResult<QuestionViewModel>> Get(int id)
         {
-            return Content("Not implemented yet!");
+            var question = DbContext.Questions.Where(i => i.Id == id).FirstOrDefault();
+
+            if(question == null) return NotFound(new
+            {
+                Error = String.Format("Question ID {0} has not been found", id)
+            });
+
+            return Ok(question);
         }
 
         [HttpPut]
-        public IActionResult Put(QuestionViewModel model)
+        public async Task<ActionResult<QuestionViewModel>> Put(QuestionViewModel model)
         {
-            throw new NotImplementedException();
+            if (model == null) return new StatusCodeResult(500);
+
+            var question = model.Adapt<Question>();
+
+            question.CreatedDate= DateTime.Now;
+            question.LastModifiedDate = question.CreatedDate;
+
+            DbContext.Questions.Add(question);
+            DbContext.SaveChanges();
+
+            return Ok(question);
         }
 
         [HttpPost]
-        public IActionResult Post(QuestionViewModel model)
+        public async Task<ActionResult<QuestionViewModel>> Post(QuestionViewModel model)
         {
-            throw new NotImplementedException();
+            if(model == null) return new StatusCodeResult(500);
+
+            var question = DbContext.Questions.Where(i => i.Id == model.Id).FirstOrDefault();
+
+            if (question == null) return NotFound(new
+            {
+                Error = String.Format("Question ID {0} has not been found", model.Id)
+            });
+
+            question.QuizId = model.QuizId;
+            question.Text = model.Text;
+            question.Notes= model.Notes;
+
+            question.LastModifiedDate= DateTime.Now;
+
+            DbContext.SaveChanges();
+
+            return Ok(question);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<ActionResult<int>> Delete(int id)
         {
-            throw new NotImplementedException();
+            var question = DbContext.Questions.Where(i => i.Id == id).FirstOrDefault();
+
+            if (question == null) return NotFound(new
+            {
+                Error = String.Format("Question ID {0} has not been found", id)
+            });
+
+            DbContext.Questions.Remove(question);
+            DbContext.SaveChanges();
+
+            return new NoContentResult();
         }
     }
 }

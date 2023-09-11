@@ -1,66 +1,106 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Mapster;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using QuizMaker.Controllers;
+using QuizMaker.Model.Data;
 using QuizMakerFree.ViewModels;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace QuizMakerFree.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
-    public class ResultController : ControllerBase
+    public class ResultController : BaseApiController
     {
+        public ResultController(ApplicationDbContext dbContext) : base(dbContext) { }
+
         [HttpGet("All/{quizId}")]
-        public IActionResult All(int quizId)
+        public async Task<ActionResult<List<ResultViewModel>>> All(int quizId)
         {
-            var sampleResult = new List<ResultViewModel>();
+            var results = DbContext.Results.Where(i => i.QuizId == quizId).ToArray();
 
-            sampleResult.Add(new ResultViewModel()
-            {
-                Id = 1,
-                QuizId= quizId,
-                Text = "What do you value most in your life?",
-                CreatedDate= DateTime.Now,
-                LastModifiedDate= DateTime.Now
-            });
-
-            for(int i = 2; i <= 5; i++)
-            {
-                sampleResult.Add(new ResultViewModel()
-                {
-                    Id = i,
-                    QuizId = quizId,
-                    Text = String.Format("Sample Result {0}", 1),
-                    CreatedDate = DateTime.Now,
-                    LastModifiedDate = DateTime.Now
-                });
-
-            }
-
-            return Ok(sampleResult);
+            return Ok(results);
         }
 
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public async Task<ActionResult<ResultViewModel>> Get(int id)
         {
-            return Content("Not implemented yet!");
+            var result = DbContext.Results.Where(i => i.Id == id).FirstOrDefault();
+
+            if(result == null)
+            {
+                return NotFound(new
+                {
+                    Error = String.Format("Result ID {0} has not been found", id)
+                });
+            }
+
+            return Ok(result);
         }
 
         [HttpPut]
-        public IActionResult Put(ResultViewModel model)
+        public async Task<ActionResult<ResultViewModel>> Put(ResultViewModel model)
         {
-            throw new NotImplementedException();
+            if (model == null) return new StatusCodeResult(500);
+
+            var result = model.Adapt<Result>();
+
+            result.CreatedDate = DateTime.Now;
+            result.LastModifiedDate = result.CreatedDate;
+
+            DbContext.Results.Add(result);
+
+            DbContext.SaveChanges();
+
+            return Ok(result);
+
         }
 
         [HttpPost]
-        public IActionResult Post(ResultViewModel model)
+        public async Task<ActionResult<ResultViewModel>> Post(ResultViewModel model)
         {
-            throw new NotImplementedException();
+            if (model == null) return new StatusCodeResult(500);
+
+            var result = DbContext.Results.Where(q => q.Id == model.Id).FirstOrDefault();
+            
+            if(result == null) 
+            {
+                return NotFound(new
+                {
+                    Error = String.Format("Result ID {0} has not been found", model.Id)
+                });
+            }
+
+            result.QuizId = model.QuizId;
+            result.Text = model.Text;
+            result.MinValue = model.MinValue;
+            result.MaxValue = model.MaxValue; 
+            result.Notes = model.Notes;
+
+            result.LastModifiedDate = DateTime.Now;
+
+            DbContext.SaveChanges();
+
+            return Ok(result);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<ActionResult<int>> Delete(int id)
         {
-            throw new NotImplementedException();
+            var result = DbContext.Results.Where(i => i.Id == id).FirstOrDefault();
+
+            if (result == null)
+            {
+                return NotFound(new
+                {
+                    Error = String.Format("Result ID {0} has not been found", id)
+                });
+            }
+
+            DbContext.Results.Remove(result);
+
+            DbContext.SaveChanges();
+
+            return new NoContentResult();
         }
     }
 }

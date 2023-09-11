@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using QuizMakerFree.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -20,9 +22,9 @@ namespace QuizMaker.Model.Data
         [Required]
         public string Title { get; set; }
 
-        public string? Description { get; set; }
+        public string Description { get; set; }
 
-        public string? Text { get; set; }
+        public string Text { get; set; }
 
         public string? Notes { get; set; }
 
@@ -50,5 +52,10 @@ namespace QuizMaker.Model.Data
         public virtual List<Question> Questions { get; set; }
 
         public virtual List<Result> Results { get; set; }
+
+        public static implicit operator Quiz(Task<ActionResult<QuizViewModel>> v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

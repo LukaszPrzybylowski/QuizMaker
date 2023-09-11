@@ -18,13 +18,14 @@ export class QuizEditComponent {
     private router: Router,
     private quizService: QuizService)
     {
+      this.quiz = <Quiz>{};
       var id = +this.activatedRoute.snapshot.params["id"];
       if(id){
         this.editMode = true;
         quizService.getQuiz(id).subscribe(result => {
           this.quiz = result;
           this.title = "Edit - " + this.quiz.title;
-        }, error => console.error(error));     
+        });     
       }
       else{
         this.editMode = false;
@@ -38,14 +39,14 @@ export class QuizEditComponent {
           var v = result;
           console.log("Quiz " + v.id + " has been update.");
           this.router.navigate(["home"]);
-        }, error => console.log(error));
+        });
       }
       else{
-        this.quizService.createQuiz(quiz).subscribe(result =>{
+        this.quizService.createQuiz(quiz).subscribe(result =>{            
             var q = result;
             console.log("Quiz " + q.id + "has been create.");
             this.router.navigate(["home"]);
-          }, error => console.error(error));
+          });
       }
     }
 
