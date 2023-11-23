@@ -1,6 +1,18 @@
-<h2>{{title}}</h2>
-<ul class="quizzes">
-    <li *ngFor="let quiz of quizzes" [class.selected]="quiz === selectedQuiz" (click)="onSelect(quiz)">
-        <span>{{quiz.title}}</span>
-    </li>
-</ul>
+<div class="panel panel-primary {{class}}">
+    <div class="panel-heading">
+        <h4>{{title}}</h4>
+        <span class="glyphicon"></span>
+    </div>
+    <div class="panel-body">
+        <ul class="list-group">
+            <li class="list-group-item"
+                *ngFor="let quiz of quizzes"
+                [class.selected]="quiz === selectedQuiz"
+                (click)="onSelect(quiz)">
+                <img src="https://source.unsplash.com/random/200x200?sig={{quiz.id}}" 
+                alt="{{quiz.title}}" class="img-circle">
+            <span>{{quiz.title}}</span>
+        </li>
+        </ul>
+    </div>
+</div>

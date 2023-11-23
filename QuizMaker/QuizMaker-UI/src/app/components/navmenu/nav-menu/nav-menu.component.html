@@ -1,22 +1,39 @@
-<ul class='nav navbar-nav'>
-   <li [routerLinkActive]="['link-active']">
-      <a [routerLink]="['/home']">
-         <span class='glyphicon glyphicon-home'></span> Home
-      </a>
-   </li>
-   <li [routerLinkActive]="['link-active']">
-      <a [routerLink]="['/about']">
-         <span class='glyphicon glyphicon-info-sign'></span> About
-      </a>
-   </li>
-   <li [routerLinkActive]="['link-active']">
-      <a [routerLink]="['/login']">
-         <span class='glyphicon glyphicon-log-in'></span> Login
-      </a>
-   </li>
-   <li [routerLinkActive]="['link-active']">
-      <a [routerLink]="['/quiz/create']">
-         <span class='glyphicon glyphicon-log-in'></span> Create Quiz
-      </a>
-   </li>
-</ul>
+<div class="side-nav">
+   <a href="#" class="logo">
+      <img src="/assets/Quiz_Maker.png" class="logo-img">
+      <img src="/assets/icon.png" class="logo-icon">
+   </a>
+   <ul class='nav-links'>
+      <li>
+         <a [routerLink]="['/home']">
+         <i class="fa-solid fa-house"></i>
+         <p>Home</p>
+         </a>
+      </li>
+      <li>
+         <a [routerLink]="['/about']">
+         <i class="fa-solid fa-circle-info"></i>
+            <p>About</p>
+         </a>
+      </li>
+      <li *ngIf="!this.authService.isLoggedIn()">
+         <a [routerLink]="['/login']">
+         <i class="fa-solid fa-right-to-bracket"></i>
+         <p>Login</p>
+         </a>
+      </li>
+      <li *ngIf="this.authService.isLoggedIn()">
+         <a [routerLink]="['/quiz/create']">
+         <i class="fa-solid fa-plus"></i>
+         <p>Create quiz</p>
+         </a>
+      </li>
+      <li *ngIf="this.authService.isLoggedIn()">
+         <a (click)="logout()">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <p>Logout</p>
+         </a>
+      </li>
+      <div class="active"></div>
+   </ul>
+</div>

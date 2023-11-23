@@ -1,18 +1,59 @@
 <h2>{{title}}</h2>
 <div class="qustion-edit">
-    <div>
-        <label for="title">Question title:</label>
-        <br />
-        <input type="text" id="title" [(ngModel)]="question.text"
-        placeholder="enter a suitable text..." />
-    </div>
-    <div>
-        <input *ngIf="editMode" type="button" value="Apply Changes"
-            (click)="onSubmit(question)" />
-        <input *ngIf="!editMode" type="button" value="Create the Question!"
-            (click)="onSubmit(question)" />
-        <input type="button" value="Cancel" (click)="onBack()" />
-    </div>
-
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+            <label for="text">Question text:</label>
+            <br />
+            <textarea type="text" id="text" 
+                [ngClass]="{'is-invalid' : hasError('text'),
+                             'is-valid' : !hasError('text') &&  this.form.dirty}"  
+                formControlName="text" required            
+                placeholder="enter a suitable text..." 
+                class="form-control">
+            </textarea>
+            <div *ngIf="hasError('text')"
+                class="invalid-feedback">
+                Text is a required field: please insert a valid text.
+            </div>
+        </div>
+        <div>
+            <button *ngIf="editMode" type="button"
+                [disabled]="form.invalid"
+                (click)="onSubmit()"
+                class="btn btn-sm btn-success" >
+                Apply Changes
+            </button>
+            <button *ngIf="!editMode" type="button"
+                [disabled]="form.invalid"
+                (click)="onSubmit()" 
+                class="btn btn-sm btn-primary">
+                Create the Question!
+            </button>
+            <input type="button" value="Cancel" (click)="onBack()" 
+                class="btn btn-sm btn-secondary"/>
+        </div>
+    </form>
     <app-answer-list *ngIf="editMode" [question]="question"></app-answer-list>
+
+    <div class="panel panel-info"
+        style="margin-top: 20px">
+        <div class="panel-heading">Form debug info</div>
+        <div class="panel-body">
+            <p><strong>Form value:</strong></p>
+            <div class="help-block">
+                {{form.value | json}}
+            </div>
+            <p><strong>Form status:</strong></p>
+            <div class="help-block">
+                {{form.status | json}}
+            </div>
+        </div>
+
+        <p><strong>Form activity log:</strong></p>
+        <div class="help-block">
+            <span *ngIf="activityLog"
+                [innerHTML]="activityLog"></span>
+        </div>
+
+    </div>
 </div>

@@ -5,9 +5,9 @@ VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuizMaker", "QuizMaker\QuizMaker.csproj", "{C0CBB37E-0230-4443-8CA8-D1337B973DBD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuizMaker.Services", "QuizMaker.Services\QuizMaker.Services.csproj", "{812EB4D1-A4F2-4A01-B38B-63A5F6CB1EA9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuizMaker.Services", "QuizMaker.Services\QuizMaker.Services.csproj", "{812EB4D1-A4F2-4A01-B38B-63A5F6CB1EA9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuizMaker.Model", "QuizMaker.Model\QuizMaker.Model.csproj", "{BF651C5B-93D0-4960-8D69-7064383729C5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuizMaker.Model", "QuizMaker.Model\QuizMaker.Model.csproj", "{BF651C5B-93D0-4960-8D69-7064383729C5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

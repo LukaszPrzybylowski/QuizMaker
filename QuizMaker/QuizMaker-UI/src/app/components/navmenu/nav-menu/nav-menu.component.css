@@ -1,58 +1,91 @@
-li .glyphicon {
-    margin-right: 10px;
+.side-nav {
+  width: 250px;
+  height: 100%;
+  background-color: #0d74f5;
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 20px 30px;
+  z-index: 1;
 }
-
-/* Highlighting rules for nav menu items */
-li.link-active a,
-li.link-active a:hover,
-li.link-active a:focus {
-    background-color: #4189C7;
-    color: white;
+.logo {
+  display: block;
+  margin-bottom: 130px;
 }
-
-/* Keep the nav menu independent of scrolling and on top of other items */
-.main-nav {
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1;
+.logo-img {
+  width: 150px;
 }
-
-@media (min-width: 768px) {
-    /* On small screens, convert the nav menu to a vertical sidebar */
-    .main-nav {
-        height: 100%;
-        width: calc(25% - 20px);
-    }
-    .navbar {
-        border-radius: 0px;
-        border-width: 0px;
-        height: 100%;
-    }
-    .navbar-header {
-        float: none;
-    }
-    .navbar-collapse {
-        border-top: 1px solid #444;
-        padding: 0px;
-    }
-    .navbar ul {
-        float: none;
-    }
-    .navbar li {
-        float: none;
-        font-size: 15px;
-        margin: 6px;
-    }
-    .navbar li a {
-        padding: 10px 16px;
-        border-radius: 4px;
-    }
-    .navbar a {
-        /* If a menu item's text is too long, truncate it */
-        width: 100%;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
+.logo-icon {
+  display: none;
+  width: 60px;
+}
+.nav-links {
+  list-style: none;
+  position: relative;
+}
+.nav-links li {
+  padding: 10px 0;
+}
+.nav-links li a {
+  color: #fff;
+  text-decoration: none;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+}
+.nav-links li a i {
+  font-size: 22px;
+  margin-right: 20px;
+}
+.nav-links li a p {
+  margin-top: 12px;
+}
+.nav-links li:hover a {
+  color: #0d74f5;
+  transition: 0.3s;
+}
+.nav-links li:hover ~ .active {
+  display: block;
+}
+.nav-links li:nth-child(1):hover ~ .active {
+  top: 5.5%;
+}
+.nav-links li:nth-child(2):hover ~ .active {
+  top: 30.5%;
+}
+.nav-links li:nth-child(3):hover ~ .active {
+  top: 55.5%;
+}
+.nav-links li:nth-child(4):hover ~ .active {
+  top: 80.5%;
+}
+.active {
+  background: #fff;
+  width: 100%;
+  height: 47px;
+  position: absolute;
+  left: 0;
+  top: 5.5%;
+  z-index: -1;
+  border-radius: 6px;
+  box-shadow: 0 5px 10px rgba(255, 255, 255, 0.4);
+  display: none;
+  transition: top 0.5s;
+}
+@media only screen and (max-width: 600px) {
+  .side-nav {
+    width: 110px;
+  }
+  .logo-icon {
+    display: block;
+  }
+  .logo-img {
+    display: none;
+  }
+  .nav-links li a {
+    justify-content: center;
+  }
+  .nav-links li a p {
+    display: none;
+  }
 }

@@ -1,32 +1,57 @@
-<h2>{{title}}</h2>
 <div class="quiz-edit">
-    <div>
-        <label for="title">Quiz title:</label>
-        <br />
-        <input type="text" id="title" [(ngModel)]="quiz.title"
-        placeholder="choose a title..." />
-    </div>
-    <div>
-        <label for="description">Quiz description:</label>
-        <br />
-        <input type="text" id="description"
-        [(ngModel)]="quiz.description" 
-        placeholder="enter a description..." />
-    </div>
-    <div>
-        <label for="text">Quiz informative text:</label>
-        <br />
-        <textarea id="text" [(ngModel)]="quiz.text" 
-        placeholder="enter a text...">
-        </textarea>
-    </div>
-    <div>
-        <input *ngIf="editMode" type="button" value="Apply Changes"
-            (click)="onSubmit(quiz)" />
-        <input *ngIf="!editMode" type="button" value="Create the Quiz!"
-            (click)="onSubmit(quiz)" />
-        <input type="button" value="Cancel" (click)="onBack()" />
-    </div>
-    <app-question-list [quiz]="quiz" *ngIf="editMode"></app-question-list>
-    <app-result-list [quiz]="quiz" *ngIf="editMode"></app-result-list>
+    <h2>{{title}}</h2>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="form-group"
+            [ngClass]="{'has-error has-feedback' : 
+                form.get('title')!.errors?.['required']}">
+            <label for="title">Quiz title:</label>
+            <br />
+            <input type="text" id="title"
+                [ngClass]="{'is-invalid' : hasError('title'),
+                             'is-valid': !hasError('title')}"
+                formControlName="title" required
+                placeholder="choose a title..."
+                class="form-control">
+            <div *ngIf="hasError('title')"
+                class="invalid-feedback">
+                Title is a required field: please insert a valid title.
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="description">Quiz description</label>
+            <br />
+            <input tpye="text" id="description"
+                formControlName="description"
+                placeholder="enter a description"
+                class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="text">Quiz informative text:</label>
+            <br />
+            <textarea id="text"
+                formControlName="text"
+                placeholder="enter a text..."
+                class="form-control"></textarea>
+        </div>
+        <div class="form-group commands">
+            <button *ngIf="editMode" type="submit"
+                [disabled]="form.invalid"
+                class="btn btn-success">
+                Apply Changes
+            </button>
+            <button *ngIf="!editMode" type="submit"
+                [disabled]="form.invalid"
+                class="btn btn-success">
+                Create the Quiz
+            </button>
+            <button 
+                *ngIf="!editMode" type="submit"
+                (click)="onBack()"
+                class="btn btn-secondary">
+                Cancel
+            </button>
+        </div>
+    </form>
+    <app-question-list *ngIf="editMode" [quiz]="quiz"></app-question-list>
+    <app-result-list *ngIf="editMode" [quiz]="quiz"></app-result-list>
 </div>

@@ -4,8 +4,8 @@ export class Answer{
         public quizId : number,
         public questionId : number,
         public text : string,
-        public value : number,
         public createdDate : Date,
-        public lastModifiedDate : Date
+        public lastModifiedDate : Date,
+        public value ?: number,
     ){}
 }

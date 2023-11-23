@@ -1,5 +1,7 @@
 ﻿using Mapster;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using QuizMaker.Controllers;
@@ -8,12 +10,16 @@ using QuizMaker.Services;
 using QuizMakerFree.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 
 namespace QuizMakerFree.Controllers
 {
     public class QuizController : BaseApiController
     {
-        public QuizController(ApplicationDbContext context) : base(context) {}
+        public QuizController(ApplicationDbContext context,
+            RoleManager<IdentityRole> roleManager,
+            UserManager<ApplicationUser> userManager,
+            IConfiguration configuration) : base(context, roleManager, userManager, configuration) {}
 
         [HttpGet("{id}")]
         public async Task<ActionResult<QuizViewModel>> Get(int id)
@@ -32,7 +38,8 @@ namespace QuizMakerFree.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<QuizViewModel>> Put(QuizViewModel model)
+        [Authorize]
+        public async Task<ActionResult<QuizViewModel>> Put([FromBody]QuizViewModel model)
         {
             if (model == null) return new StatusCodeResult(510);
 
@@ -45,9 +52,7 @@ namespace QuizMakerFree.Controllers
             quiz.CreatedDate = DateTime.Now;
             quiz.LastModifiedDate = DateTime.Now;
 
-            quiz.UserId = DbContext.Users.Where(u => u.UserName == "Admin").
-                FirstOrDefault().Id;
-                
+            quiz.UserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             DbContext.Quizzes.Add(quiz);
             DbContext.SaveChanges();
 
@@ -55,7 +60,8 @@ namespace QuizMakerFree.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<QuizViewModel>> Post(QuizViewModel model)
+        [Authorize]
+        public async Task<ActionResult<QuizViewModel>> Post([FromBody]QuizViewModel model)
         {
             if (model == null) return new StatusCodeResult(500);
 
@@ -71,8 +77,7 @@ namespace QuizMakerFree.Controllers
                 quiz.CreatedDate = DateTime.Now;
                 quiz.LastModifiedDate = DateTime.Now;
 
-                quiz.UserId = DbContext.Users.Where(u => u.UserName == "Admin").
-                    FirstOrDefault().Id;
+                quiz.UserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
                 DbContext.Quizzes.Add(quiz);
                 DbContext.SaveChanges();
@@ -93,6 +98,7 @@ namespace QuizMakerFree.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<ActionResult<QuizViewModel>> Delete(int id)
         {
             var quiz = DbContext.Quizzes.Where(q => q.Id == id).FirstOrDefault();

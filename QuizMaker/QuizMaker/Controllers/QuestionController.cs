@@ -1,5 +1,7 @@
 ﻿using Mapster;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using QuizMaker.Controllers;
 using QuizMaker.Model.Data;
@@ -10,7 +12,10 @@ namespace QuizMakerFree.Controllers
     [ApiController]
     public class QuestionController : BaseApiController
     {
-        public QuestionController(ApplicationDbContext dbContext) : base(dbContext) { }
+        public QuestionController(ApplicationDbContext context,
+            RoleManager<IdentityRole> roleManager,
+            UserManager<ApplicationUser> userManager,
+            IConfiguration configuration) : base(context, roleManager, userManager, configuration) { }
 
         [HttpGet("All/{quizId}")]
         public async Task<ActionResult<List<QuestionViewModel>>> All(int quizId) 
@@ -34,6 +39,7 @@ namespace QuizMakerFree.Controllers
         }
 
         [HttpPut]
+        [Authorize]
         public async Task<ActionResult<QuestionViewModel>> Put(QuestionViewModel model)
         {
             if (model == null) return new StatusCodeResult(500);
@@ -50,6 +56,7 @@ namespace QuizMakerFree.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<QuestionViewModel>> Post(QuestionViewModel model)
         {
             if(model == null) return new StatusCodeResult(500);
@@ -73,6 +80,7 @@ namespace QuizMakerFree.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<ActionResult<int>> Delete(int id)
         {
             var question = DbContext.Questions.Where(i => i.Id == id).FirstOrDefault();

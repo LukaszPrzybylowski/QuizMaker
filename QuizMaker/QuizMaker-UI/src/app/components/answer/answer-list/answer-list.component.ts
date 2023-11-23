@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { Route, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { Answer } from 'src/app/models/answer';
 import { Question } from 'src/app/models/question';
 import { AnswerService } from 'src/app/services/answer/answer.service';

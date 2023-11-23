@@ -1,4 +1,21 @@
-.quiz-edit input[type="text"],
+.quiz-edit {
+  width: 90%;
+}
+@media only screen and (max-width: 600px) {
+  .quiz-edit {
+    width: 100%;
+  }
+}
 .quiz-edit textarea {
- min-width: 500px;
+  min-height: 100px;
+  border: 1px solid;
+}
+.quiz-edit .commands {
+  margin-top: 20px;
+}
+.quiz-edit .commands .btn-secondary {
+  margin-left: 5px;
+}
+input {
+  border: 1px solid;
 }

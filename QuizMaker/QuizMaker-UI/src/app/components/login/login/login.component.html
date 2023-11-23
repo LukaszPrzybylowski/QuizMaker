@@ -1,4 +1,53 @@
-<h2>{{title}}</h2>
-<div>
-    To implementent in future
+<div class="login-container">
+    <img id="login-img" class="login-img"
+        src="//ssl.gstatic.com/accounts/ui/avatar_2x.png">
+    <h2 class="login-title">{{title}}</h2>
+    <form [formGroup]="form"
+          (ngSubmit)="onSubmit()"
+          class="login-form">
+        <div *ngIf="form.errors?.['auth']"
+             class="error-panel help block">
+             {{form.errors?.['auth']}}
+        </div>
+        <div class="form-group"
+             [ngClass]="{ 'has-error has-feedback': hasError('Username')}">
+            <input type="text" required
+                [ngClass]="{'is-invalid' : hasError('Username'),
+                    'is-valid': !hasError('Username')}"
+                formControlName="Username"
+                class="form-control"
+                placeholder="Please insert a valid username or e-mail address." >
+            <div *ngIf="hasError('Username')"
+                class="invalid-feedback">
+                Please insert a valid username or e-mail address.
+            </div>
+        </div>
+        <div class="form-group"
+             [ngClass]="{ 'has-error has-feedback': hasError('Password')}">
+            <input type="password" required
+                   [ngClass]="{'is-invalid' : hasError('Username'),
+                        'is-valid': !hasError('Username')}"
+                   formControlName="Password"
+                   class="form-control"
+                   placeholder="Password">
+            <div *ngIf="hasError('Username')"
+                   class="invalid-feedback">
+                   Please insert a password.
+            </div>
+        </div>
+        <div class="checkbox">
+            <label><input type="checkbox" name="remember" value="remember">
+                Remember me</label>
+        </div>
+        <button tpye="submit"
+            [disabled]="!form.valid"
+            class="btn btn-md btn-success btn-block btn-signin">
+            Sing in
+        </button>
+    </form>
+    <div class="login-link">
+        <a href="#">
+            Forgot the password?
+        </a>
+    </div>
 </div>

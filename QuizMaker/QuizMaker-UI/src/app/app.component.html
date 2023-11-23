@@ -1,3 +1,24 @@
-<div class="content">
-    <router-outlet></router-outlet>
+<div class='container-fluid'>
+   <div class='row'>
+      <nav class="navbar header-content">
+         <div class="container-fluid">
+            <div class="navbar-header">
+               <a [routerLink]="['/home']">
+                  <img src="/assets/Quiz_Maker.png"
+                       alt="QuizMaker" />
+               </a>
+            </div>
+            <app-quiz-search class="search-header"
+                         placeholder="Search quiz..."></app-quiz-search>
+         </div>
+      </nav>
+   </div>
+   <div class='row'>
+      <div class='col-sm-3'>
+         <app-nav-menu></app-nav-menu>
+      </div>
+      <div class='col-sm-9 body-content'>
+         <router-outlet></router-outlet>
+      </div>
+   </div>
 </div>

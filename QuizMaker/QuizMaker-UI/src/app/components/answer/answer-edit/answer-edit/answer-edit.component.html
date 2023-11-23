@@ -1,25 +1,52 @@
 <h2>{{title}}</h2>
-<div class="quiz-edit">
-    <div>
-        <label for="title">Answer title:</label>
-        <br />
-        <input type="text" id="title" [(ngModel)]="answer.text"
-        placeholder="enter a suitable text..." />
-    </div>
-
-    <div>
-        <label for="value">Score Value:</label>
-        <br />
-        <select id="value" name="value" [(ngModel)]="answer.value">
-            <option *ngFor="let num of [-5,-4,-3,-2,-1,0,1,2,3,4,5]"
-                [value]="num">{{num}}</option>
-        </select>
-    </div>
-    <div>
-        <input *ngIf="editMode" type="button" value="Apply Changes"
-            (click)="onSubmit(answer)" />
-        <input *ngIf="!editMode" type="button" value="Create the Answer!"
-            (click)="onSubmit(answer)" />
-        <input type="button" value="Cancel" (click)="onBack()" />
-    </div>
+<div class="answer-edit">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+            <label for="title">Answer text:</label>
+            <br />
+            <textarea type="text" id="text"
+                    [ngClass]="{'is-invalid' : hasError('text'),
+                                'is-valid': !hasError('text')}"
+                    formControlName = 'text' required
+                    placeholder="enter a suitable text..."
+                    class="form-control">
+            </textarea>
+            <div *ngIf="hasError('text')"
+                class="invalid-feedback">
+                Text is a required field: please insert a valid text.
+            </div>
+        </div>
+        <div class="form-group" >
+            <label for="value">Score Value:</label>
+            <br />
+            <select id="value" formControlName="value" required
+                    [ngClass]="{'is-invalid' : hasError('value'),
+                    'is-valid': !hasError('value')}">
+                <option value="">Pick a value...</option>
+                <option *ngFor="let num of [-5,-4,-3,-2,-1,0,1,2,3,4,5]"
+                    [value]="num">{{num}}</option>
+            </select>
+            <div *ngIf="hasError('value')" 
+                class="invalid-feedback">Please select a valid number between -5 and 5.
+            </div>
+        </div>
+        <div>
+            <button *ngIf="editMode" type="button"
+                [disabled]="form.invalid"
+                (click)="onSubmit()"
+                class="btn btn-sm btn-success" >
+                Apply Changes
+            </button>
+            <button *ngIf="!editMode" type="button"
+                [disabled]="form.invalid"
+                (click)="onSubmit()"
+                class="btn btn-sm btn-primary">
+                Create the Answer!
+            </button>
+            <button type="button" (click)="onBack()" 
+                class="btn btn-sm btn-secondary">
+                Cancel
+            </button>
+        </div>
+    </form>
 </div>

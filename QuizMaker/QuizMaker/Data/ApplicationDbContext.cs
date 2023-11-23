@@ -1,13 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace QuizMaker.Model.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions options) : base(options) { }
 
@@ -36,8 +32,6 @@ namespace QuizMaker.Model.Data
             modelBuilder.Entity<Result>().Property(i => i.Id).ValueGeneratedOnAdd();
             modelBuilder.Entity<Result>().HasOne(i => i.Quiz).WithMany(u => u.Results);
         }
-
-        public DbSet<ApplicationUser> Users { get; set; }
         public DbSet<Quiz> Quizzes { get; set; }
         public DbSet<Question> Questions { get; set; }
 

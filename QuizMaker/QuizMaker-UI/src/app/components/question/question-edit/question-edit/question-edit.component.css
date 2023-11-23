@@ -1,0 +1,31 @@
+.question-edit {
+  width: 80%;
+}
+@media only screen and (max-width: 600px) {
+  .question-edit {
+    width: 100%;
+  }
+}
+.question-edit textarea {
+  min-height: 100px;
+}
+.question-edit select {
+  max-width: 200px;
+}
+.question-edit .commands {
+  margin-top: 20px;
+}
+.question-edit .btn {
+  min-width: 140px;
+  margin: 10px;
+}
+.btn {
+  margin-top: 10px;
+  min-width: 140px;
+}
+.btn-secondary {
+  margin-left: 10px;
+}
+textarea {
+  border: 1px solid;
+}

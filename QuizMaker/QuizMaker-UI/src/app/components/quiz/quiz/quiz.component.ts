@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Quiz } from 'src/app/models/quiz';
+import { AuthServiceService } from 'src/app/services/authService/auth-service.service';
 import { QuizService } from 'src/app/services/quiz/quiz.service';
 
 @Component({
@@ -15,7 +16,8 @@ export class QuizComponent {
   constructor(
     private router: Router,
     private activeRout: ActivatedRoute,
-    private quizService: QuizService
+    private quizService: QuizService,
+    public authService: AuthServiceService
   )
   {
       var id = + this.activeRout.snapshot.params["id"];

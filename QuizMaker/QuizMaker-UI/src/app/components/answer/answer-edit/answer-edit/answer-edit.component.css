@@ -1,0 +1,35 @@
+.answer-edit {
+  width: 80%;
+}
+.answer-edit .btn {
+  margin-top: 10px;
+}
+.answer-edit .btn-secondary {
+  margin-left: 10px;
+}
+.answer-edit select {
+  width: 100%;
+  min-width: 15ch;
+  max-width: 30ch;
+  border-radius: 0.25em;
+  padding: 0.25em 0.5em;
+  font-size: 1.25rem;
+  cursor: pointer;
+  line-height: 1.1;
+  background-color: #fff;
+  background-image: linear-gradient(to top, #f9f9f9, #fff 33%);
+}
+@media only screen and (max-width: 600px) {
+  .answer-edit {
+    width: 100%;
+  }
+}
+.answer-edit textarea {
+  min-height: 100px;
+}
+.answer-edit select {
+  max-width: 200px;
+}
+.answer-edit .commands {
+  margin-top: 20px;
+}
