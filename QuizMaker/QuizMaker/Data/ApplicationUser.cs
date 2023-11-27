@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using QuizMaker.Data;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -39,5 +40,7 @@ namespace QuizMaker.Model.Data
         public DateTime LastModifiedDate { get; set; }
 
         public virtual List<Quiz> Quizzes { get; set; }
+
+        public virtual List<Token> Tokens { get; set; }
     }
 }

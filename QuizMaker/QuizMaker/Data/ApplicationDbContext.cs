@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using QuizMaker.Data;
 
 namespace QuizMaker.Model.Data
 {
@@ -13,6 +14,7 @@ namespace QuizMaker.Model.Data
 
             modelBuilder.Entity<ApplicationUser>().ToTable("Users");
             modelBuilder.Entity<ApplicationUser>().HasMany(u => u.Quizzes).WithOne(u => u.User);
+            modelBuilder.Entity<ApplicationUser>().HasMany(u => u.Tokens).WithOne(u => u.User);
 
             modelBuilder.Entity<Quiz>().ToTable("Quizzes");
             modelBuilder.Entity<Quiz>().Property(i => i.Id).ValueGeneratedOnAdd();
@@ -31,6 +33,10 @@ namespace QuizMaker.Model.Data
             modelBuilder.Entity<Result>().ToTable("Results");
             modelBuilder.Entity<Result>().Property(i => i.Id).ValueGeneratedOnAdd();
             modelBuilder.Entity<Result>().HasOne(i => i.Quiz).WithMany(u => u.Results);
+
+            modelBuilder.Entity<Token>().ToTable("Tokens");
+            modelBuilder.Entity<Token>().Property(i => i.Id).ValueGeneratedOnAdd();
+            modelBuilder.Entity<Token>().HasOne(i => i.User).WithMany(u => u.Tokens);
         }
         public DbSet<Quiz> Quizzes { get; set; }
         public DbSet<Question> Questions { get; set; }
@@ -38,5 +44,7 @@ namespace QuizMaker.Model.Data
         public DbSet<Answer> Answers { get; set; }
 
         public DbSet<Result> Results { get; set; }
+
+        public DbSet<Token> Tokens { get; set; }
     }
 }

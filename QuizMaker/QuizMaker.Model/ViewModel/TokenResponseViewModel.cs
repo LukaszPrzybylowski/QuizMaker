@@ -14,5 +14,7 @@ namespace QuizMaker.Model.ViewModel
 
         public string Token { get; set; }
         public int Expiration { get; set; }
+
+        public string Refresh_Token { get; set; }
     }
 }

@@ -10,6 +10,9 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq.Expressions;
 using QuizMaker.Model.ViewModel;
 using JwtRegisteredClaimNames = System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames;
+using QuizMaker.Data.Migrations;
+using QuizMaker.Data;
+using System.Reflection.Metadata;
 
 namespace QuizMaker.Controllers
 {
@@ -31,8 +34,10 @@ namespace QuizMaker.Controllers
 
             switch (model.Grant_type)
             {
-                case "password":
+                case "Password":
                     return await GetToken(model);
+                case "Refresh_Token":
+                    return await RefreshToken(model);
                 default:
                     return new UnauthorizedResult();
             }
@@ -54,32 +59,50 @@ namespace QuizMaker.Controllers
                     return new UnauthorizedResult();
                 }
 
-                DateTime now = DateTime.UtcNow;
+                var rt = CreateRefreshToken(model.Client_Id, user.Id);
 
-                var claims = new[]
+                DbContext.Tokens.Add(rt);
+                DbContext.SaveChanges();
+
+                var t = CreateAccessToken(user.Id, rt.Value);
+
+
+                return t;
+            }
+            catch (Exception ex)
+            {
+                return new UnauthorizedResult();
+            }
+        }
+
+        private async Task<ActionResult> RefreshToken(TokenRequestViewModel model)
+        {
+            try
+            {
+                var rt = DbContext.Tokens.FirstOrDefault(t => t.ClientId == model.Client_Id
+                    && t.Value == model.Refresh_Token);
+
+                if(rt == null)
                 {
-                    new Claim(JwtRegisteredClaimNames.Sub, user.Id),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    new Claim(JwtRegisteredClaimNames.Iat, new DateTimeOffset(now).ToUnixTimeSeconds().ToString())
-                };
+                    return new UnauthorizedResult();
+                }
 
-                var tokenExpirationMins = Configuration.GetValue<int>("Auth:Jwt:TokenExpirationInMinutes");
-                var issuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Auth:Jwt:Key"]));
+                var user = await UserManager.FindByIdAsync(rt.UserId);
 
-                var token = new JwtSecurityToken(issuer: Configuration["Auth:Jwt:Issuer"],
-                                                  audience: Configuration["Auth:Jwt:Audience"],
-                                                  claims: claims,
-                                                  notBefore: now,
-                                                  expires: now.Add(TimeSpan.FromMinutes(tokenExpirationMins)),
-                                                  signingCredentials: new SigningCredentials(issuerSigningKey, SecurityAlgorithms.HmacSha256)
-                                                  );
-                var encodeToken = new JwtSecurityTokenHandler().WriteToken(token);
-
-                var response = new TokenResponseViewModel()
+                if(user == null)
                 {
-                    Token = encodeToken,
-                    Expiration = tokenExpirationMins
-                };
+                    return new UnauthorizedResult();
+                }
+
+                var rtNew = CreateRefreshToken(rt.ClientId, rt.UserId);
+
+                DbContext.Tokens.Remove(rt);
+
+                DbContext.Tokens.Add(rtNew);
+
+                DbContext.SaveChanges();
+
+                var response = CreateAccessToken(rtNew.UserId, rtNew.Value);
 
                 return response;
             }
@@ -87,6 +110,50 @@ namespace QuizMaker.Controllers
             {
                 return new UnauthorizedResult();
             }
+        }
+
+        private Token CreateRefreshToken(string clientId, string userId)
+        {
+            return new Token()
+            {
+                ClientId = clientId,
+                UserId = userId,
+                Type = 0,
+                Value = Guid.NewGuid().ToString("N"),
+                CreatedDate = DateTime.UtcNow,
+            };
+        }
+
+        private TokenResponseViewModel CreateAccessToken(string userId, string refreshToken)
+        {
+            DateTime now = DateTime.UtcNow;
+
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, userId),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Iat, new DateTimeOffset(now).ToUnixTimeSeconds().ToString())
+            };
+
+            var tokenExpirationMins = Configuration.GetValue<int>("Auth:Jwt:TokenExpirationInMinutes");
+            var issuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Auth:Jwt:Key"]));
+
+            var token = new JwtSecurityToken(
+                issuer: Configuration["Auth:Jwt:Issuer"],
+                audience: Configuration["Auth:Jwt:Audience"],
+                claims: claims,
+                notBefore: now,
+                expires: now.Add(TimeSpan.FromMinutes(tokenExpirationMins)),
+                signingCredentials: new SigningCredentials(issuerSigningKey, SecurityAlgorithms.HmacSha256));
+
+            var encodedToken = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return new TokenResponseViewModel()
+            {
+                Token = encodedToken,
+                Expiration = tokenExpirationMins,
+                Refresh_Token = refreshToken,
+            };
         }
     }
 
